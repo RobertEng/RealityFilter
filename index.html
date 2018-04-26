@@ -85,26 +85,45 @@
         if (typeof MediaStreamTrack === 'undefined' && navigator.getUserMedia) {
           alert('This browser doesn\'t support this demo :(');
         } else {
-          navigator.mediaDevices.enumerateDevices(function(sources) {
+          console.log("HI");
+
+          navigator.mediaDevices.enumerateDevices().then(function(sources) {
+            console.log("WHERE AM I")
+            console.log(sources);
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
-              if (source.kind === 'video') {
-                if (source.facing && source.facing == "environment") {
+              if (source.kind === 'videoinput') {
+                console.log("howdy")
+                // console.log(source.facing)
+                // if (source.facing && source.facing == "environment") {
+                //   console.log("Next step?")
                   options.video.optional.push({'sourceId': source.id});
-                }
+                // }
               }
             }
-            
-            navigator.getUserMedia(options, streamFound, streamError);
+            console.log(options)
+            navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
           });
         }
 
         function streamFound(stream) {
+          console.log("streamFound");
+          var videoTracks = stream.getVideoTracks();
+          // console.log('Got stream with constraints:', constraints);
+          console.log('Using video device: ' + videoTracks[0].label);
+          stream.onremovetrack = function() {
+            console.log('Stream ended');
+          };
+          window.stream = stream; // make variable available to browser console
+          video.srcObject = stream;
+
+
+          
           document.body.appendChild(video);
-          video.src = URL.createObjectURL(stream);
-          video.style.width = '100%';
-          video.style.height = '100%';
-          video.play();
+          // video.src = URL.createObjectURL(stream);
+          // video.style.width = '100%';
+          // video.style.height = '100%';
+          // video.play();
 
           canvas = document.createElement('canvas');
           canvas.width = video.clientWidth;
@@ -146,92 +165,92 @@
         if (context) {
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-          if (themes[currentTheme] == 'blackandwhite') {
-            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            var data = imageData.data;
+          // if (themes[currentTheme] == 'blackandwhite') {
+          //   var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          //   var data = imageData.data;
 
-            for (var i = 0; i < data.length; i+=4) {
-              var red = data[i],
-                  green = data[i+1],
-                  blue = data[i+2],
-                  luminance = ((red * 299) + (green * 587) + (blue * 114)) / 1000; // Gives a value from 0 - 255
-              if (luminance > 175) {
-                red = 255;
-                green = 255;
-                blue = 255;
-              } else if (luminance >= 100 && luminance <= 175) {
-                red = 190;
-                green = 190;
-                blue = 190;
-              } else if (luminance < 100) {
-                red = 0;
-                green = 0;
-                blue = 0;
-              }
+          //   for (var i = 0; i < data.length; i+=4) {
+          //     var red = data[i],
+          //         green = data[i+1],
+          //         blue = data[i+2],
+          //         luminance = ((red * 299) + (green * 587) + (blue * 114)) / 1000; // Gives a value from 0 - 255
+          //     if (luminance > 175) {
+          //       red = 255;
+          //       green = 255;
+          //       blue = 255;
+          //     } else if (luminance >= 100 && luminance <= 175) {
+          //       red = 190;
+          //       green = 190;
+          //       blue = 190;
+          //     } else if (luminance < 100) {
+          //       red = 0;
+          //       green = 0;
+          //       blue = 0;
+          //     }
 
-              data[i] = red;
-              data[i+1] = green;
-              data[i+2] = blue;
-            }
+          //     data[i] = red;
+          //     data[i+1] = green;
+          //     data[i+2] = blue;
+          //   }
 
-            imageData.data = data;
+          //   imageData.data = data;
 
-            context.putImageData(imageData, 0, 0);
-          } else if (themes[currentTheme] == 'inverse') {
-            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            var data = imageData.data;
+          //   context.putImageData(imageData, 0, 0);
+          // } else if (themes[currentTheme] == 'inverse') {
+          //   var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          //   var data = imageData.data;
 
-            for (var i = 0; i < data.length; i+=4) {
-              var red = 255 - data[i],
-                  green = 255 - data[i+1],
-                  blue = 255 - data[i+2];
+          //   for (var i = 0; i < data.length; i+=4) {
+          //     var red = 255 - data[i],
+          //         green = 255 - data[i+1],
+          //         blue = 255 - data[i+2];
 
-              data[i] = red;
-              data[i+1] = green;
-              data[i+2] = blue;
-            }
+          //     data[i] = red;
+          //     data[i+1] = green;
+          //     data[i+2] = blue;
+          //   }
 
-            imageData.data = data;
+          //   imageData.data = data;
 
-            context.putImageData(imageData, 0, 0);
-          } else if (themes[currentTheme] == 'sepia') {
-            var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-            var data = imageData.data;
+          //   context.putImageData(imageData, 0, 0);
+          // } else if (themes[currentTheme] == 'sepia') {
+          //   var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+          //   var data = imageData.data;
 
-            for (var i = 0; i < data.length; i+=4) {
-              var red = data[i],
-                  green = data[i+1],
-                  blue = data[i+2];
+          //   for (var i = 0; i < data.length; i+=4) {
+          //     var red = data[i],
+          //         green = data[i+1],
+          //         blue = data[i+2];
                   
-              var sepiaRed = (red * 0.393) + (green * 0.769) + (blue * 0.189);
-              var sepiaGreen = (red * 0.349) + (green * 0.686) + (blue * 0.168);
-              var sepiaBlue = (red * 0.272) + (green * 0.534) + (blue * 0.131);
+          //     var sepiaRed = (red * 0.393) + (green * 0.769) + (blue * 0.189);
+          //     var sepiaGreen = (red * 0.349) + (green * 0.686) + (blue * 0.168);
+          //     var sepiaBlue = (red * 0.272) + (green * 0.534) + (blue * 0.131);
 
-              var randomNoise = Math.random() * 50;
+          //     var randomNoise = Math.random() * 50;
 
-              sepiaRed += randomNoise;
-              sepiaGreen += randomNoise;
-              sepiaBlue += randomNoise;
+          //     sepiaRed += randomNoise;
+          //     sepiaGreen += randomNoise;
+          //     sepiaBlue += randomNoise;
 
-              sepiaRed = sepiaRed > 255 ? 255 : sepiaRed;
-              sepiaGreen = sepiaGreen > 255 ? 255 : sepiaGreen;
-              sepiaBlue = sepiaBlue > 255 ? 255 : sepiaBlue;
+          //     sepiaRed = sepiaRed > 255 ? 255 : sepiaRed;
+          //     sepiaGreen = sepiaGreen > 255 ? 255 : sepiaGreen;
+          //     sepiaBlue = sepiaBlue > 255 ? 255 : sepiaBlue;
 
-              data[i] = sepiaRed;
-              data[i+1] = sepiaGreen;
-              data[i+2] = sepiaBlue;
-            }
+          //     data[i] = sepiaRed;
+          //     data[i+1] = sepiaGreen;
+          //     data[i+2] = sepiaBlue;
+          //   }
 
-            imageData.data = data;
+          //   imageData.data = data;
 
-            context.putImageData(imageData, 0, 0);
-          } else if (themes[currentTheme] == 'arcade') {
-            ClosePixelation(canvas, context, [
-              {
-                resolution: 6
-              }
-            ]);
-          }
+          //   context.putImageData(imageData, 0, 0);
+          // } else if (themes[currentTheme] == 'arcade') {
+          //   ClosePixelation(canvas, context, [
+          //     {
+          //       resolution: 6
+          //     }
+          //   ]);
+          // }
 
           if (video.readyState === video.HAVE_ENOUGH_DATA) {
             texture.needsUpdate = true;
