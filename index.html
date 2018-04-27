@@ -92,6 +92,7 @@
             console.log(sources);
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
+              alert(source.kind);
               if (source.kind === 'videoinput') {
                 console.log("howdy")
                 // console.log(source.facing)
@@ -118,7 +119,7 @@
           video.srcObject = stream;
 
 
-          
+
           document.body.appendChild(video);
           // video.src = URL.createObjectURL(stream);
           // video.style.width = '100%';
