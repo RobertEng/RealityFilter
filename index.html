@@ -92,8 +92,9 @@
             console.log(sources);
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
-              alert(source.kind);
               if (source.kind === 'videoinput') {
+                var keys = Object.keys(source);
+                alert(keys);
                 console.log("howdy")
                 // console.log(source.facing)
                 // if (source.facing && source.facing == "environment") {
