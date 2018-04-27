@@ -90,6 +90,7 @@
           navigator.mediaDevices.enumerateDevices().then(function(sources) {
             console.log("WHERE AM I")
             console.log(sources);
+            alert("change 1");
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
               if (source.kind === 'videoinput') {
