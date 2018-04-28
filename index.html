@@ -120,14 +120,15 @@
           alert("streamFound");
           var videoTracks = stream.getVideoTracks();
           // console.log('Got stream with constraints:', constraints);
+          alert(videoTracks);
+          alert(videoTracks[0]);
+          alert(videoTracks[0].label)
           console.log('Using video device: ' + videoTracks[0].label);
           stream.onremovetrack = function() {
             console.log('Stream ended');
           };
           window.stream = stream; // make variable available to browser console
           video.srcObject = stream;
-
-
 
           document.body.appendChild(video);
           // video.src = URL.createObjectURL(stream);
