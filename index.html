@@ -99,7 +99,7 @@
           navigator.mediaDevices.enumerateDevices().then(function(sources) {
             console.log("WHERE AM I")
             console.log(sources);
-            alert("change 3");
+            alert("change 4");
             // options.video.optional.push({'sourceId': sources[1].id});
 
             for (var i = 0; i !== sources.length; ++i) {
@@ -137,7 +137,8 @@
 
           document.body.appendChild(video);
           alert("did i get stuck 1.1");
-          video.src = URL.createObjectURL(stream);
+          video.src = stream;
+          // video.src = URL.createObjectURL(stream);
           alert("did i get stuck 1.2");
           video.style.width = '100%';
           alert("did i get stuck 1.3");
