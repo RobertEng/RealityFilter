@@ -133,12 +133,14 @@
           };
           window.stream = stream; // make variable available to browser console
           video.srcObject = stream;
+          alert("did i get stuck 1");
 
           document.body.appendChild(video);
           video.src = URL.createObjectURL(stream);
           video.style.width = '100%';
           video.style.height = '100%';
           video.play();
+          alert("did i get stuck 2");
 
           canvas = document.createElement('canvas');
           canvas.width = video.clientWidth;
@@ -146,6 +148,7 @@
           canvas.width = nextPowerOf2(canvas.width);
           canvas.height = nextPowerOf2(canvas.height);
 
+          alert("did i get stuck 3");
           function nextPowerOf2(x) { 
               return Math.pow(2, Math.ceil(Math.log(x) / Math.log(2))); 
           }
@@ -153,6 +156,7 @@
           context = canvas.getContext('2d');
           texture = new THREE.Texture(canvas);
           texture.context = context;
+          alert("did i get stuck 4");
           
           // If you do not use powersOf2, or you want to adjust things more, you could use these:
           //texture.minFilter = THREE.LinearMipMapLinearFilter;
