@@ -102,13 +102,9 @@
             alert("change 3");
             // options.video.optional.push({'sourceId': sources[1].id});
 
-            var first_time = true;
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
               if (source.kind === 'videoinput') {
-                if (first_time) {
-                  continue;
-                }
                 options.video.optional.push({'sourceId': source.id});
               }
             }
@@ -125,7 +121,12 @@
           // console.log('Got stream with constraints:', constraints);
           alert(videoTracks);
           alert(videoTracks[0]);
-          alert(videoTracks[0].label)
+          alert(videoTracks[0].label);
+          alert(Object.keys(videoTracks[0]));
+          alert(videoTracks[0].kind + ": " + videoTracks[0].label +
+                      " id = " + videoTracks[0].id + " muted = " + 
+                      videoTracks[0].muted + ' enabled = ' +
+                      videoTracks[0].enabled);
           console.log('Using video device: ' + videoTracks[0].label);
           stream.onremovetrack = function() {
             console.log('Stream ended');
@@ -165,6 +166,7 @@
           cameraMesh.position.z = -600;
 
           scene.add(cameraMesh);
+          alert("Reached the end of streamfound");
         }
 
         function streamError(error) {
