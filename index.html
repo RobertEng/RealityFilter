@@ -100,23 +100,15 @@
             console.log("WHERE AM I")
             console.log(sources);
             alert("change 3");
-            options.video.optional.push({'sourceId': sources[1].id});
+            // options.video.optional.push({'sourceId': sources[1].id});
 
-            // for (var i = 0; i !== sources.length; ++i) {
-            //   var source = sources[i];
-            //   if (source.kind === 'videoinput') {
-            //     alert(source);
-            //     alert(source.label);
-            //     console.log("howdy")
-            //     // console.log(source.facing)
-            //     // if (source.facing && source.facing == "environment") {
-            //     //   console.log("Next step?")
-            //       options.video.optional.push({'sourceId': source.id});
-            //       break;
-            //     // }
-            //   }
-            // }
-            console.log(options)
+            for (var i = 0; i !== sources.length; ++i) {
+              var source = sources[i];
+              if (source.kind === 'videoinput') {
+                alert(source);
+                options.video.optional.push({'sourceId': source.id});
+              }
+            }
             navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
           }).catch(function(err) {
             console.log('error getting MediaDeviceInfo list', err);
@@ -125,7 +117,7 @@
         }
 
         function streamFound(stream) {
-          console.log("streamFound");
+          alert("streamFound");
           var videoTracks = stream.getVideoTracks();
           // console.log('Got stream with constraints:', constraints);
           console.log('Using video device: ' + videoTracks[0].label);
