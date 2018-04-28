@@ -102,10 +102,13 @@
             alert("change 3");
             // options.video.optional.push({'sourceId': sources[1].id});
 
+            if first_time = true;
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
               if (source.kind === 'videoinput') {
-                alert(source);
+                if (first_time) {
+                  continue;
+                }
                 options.video.optional.push({'sourceId': source.id});
               }
             }
