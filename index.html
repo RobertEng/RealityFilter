@@ -84,7 +84,7 @@
         navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         if (typeof MediaStreamTrack === 'undefined' && navigator.getUserMedia) {
-          alert('This browser doesn\'t support this demo :(');
+          console.log('This browser doesn\'t support this demo :(');
         } else {
           console.log("HI");
 
@@ -100,7 +100,7 @@
           navigator.mediaDevices.enumerateDevices().then(function(sources) {
             console.log("WHERE AM I")
             console.log(sources);
-            alert("change 4");
+            console.log("change 4");
             // options.video.optional.push({'sourceId': sources[1].id});
 
             for (var i = 0; i !== sources.length; ++i) {
@@ -117,35 +117,35 @@
         }
 
         function streamFound(stream) {
-          alert("streamFound");
+          console.log("streamFound");
           var videoTracks = stream.getVideoTracks();
           // console.log('Got stream with constraints:', constraints);
-          alert(videoTracks);
-          alert(videoTracks[0]);
-          alert(videoTracks[0].label);
-          alert(Object.keys(videoTracks[0]));
+          console.log(videoTracks);
+          console.log(videoTracks[0]);
+          console.log(videoTracks[0].label);
+          console.log(Object.keys(videoTracks[0]));
           videoTracks[0].muted = true;
-          alert(videoTracks[0].kind + ": " + videoTracks[0].label +
+          console.log(videoTracks[0].kind + ": " + videoTracks[0].label +
             "\nid = " + videoTracks[0].id +
             "\nmuted = " + videoTracks[0].muted + 
             '\nenabled = ' + videoTracks[0].enabled);
           console.log('Using video device: ' + videoTracks[0].label);
           stream.onremovetrack = function() {
-            alert('Stream ended');
+            console.log('Stream ended');
           };
           window.stream = stream; // make variable available to browser console
           video.srcObject = stream;
-          alert("did i get stuck 1");
+          console.log("did i get stuck 1");
 
           document.body.appendChild(video);
-          alert("did i get stuck 1.1");
+          console.log("did i get stuck 1.1");
           video.src = stream;
           // video.src = URL.createObjectURL(stream);
-          alert("did i get stuck 1.2");
+          console.log("did i get stuck 1.2");
           video.style.width = '100%';
-          alert("did i get stuck 1.3");
+          console.log("did i get stuck 1.3");
           video.style.height = '100%';
-          alert("did i get stuck 1.4");
+          console.log("did i get stuck 1.4");
           promise = video.play();
 
           if (promise !== undefined) {
@@ -158,7 +158,7 @@
                   // Auto-play started
               });
           }
-          alert("did i get stuck 2");
+          console.log("did i get stuck 2");
 
           canvas = document.createElement('canvas');
           canvas.width = video.clientWidth;
@@ -174,7 +174,7 @@
           context = canvas.getContext('2d');
           texture = new THREE.Texture(canvas);
           texture.context = context;
-          alert("did i get stuck 4");
+          console.log("did i get stuck 4");
           
           // If you do not use powersOf2, or you want to adjust things more, you could use these:
           //texture.minFilter = THREE.LinearMipMapLinearFilter;
@@ -188,7 +188,7 @@
           cameraMesh.position.z = -600;
 
           scene.add(cameraMesh);
-          alert("Reached the end of streamfound");
+          console.log("Reached the end of streamfound");
         }
 
         function streamError(error) {
