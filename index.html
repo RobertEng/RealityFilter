@@ -21,7 +21,8 @@
   </head>
   <body>
     <div id="webglviewer"></div>
-    <button id="startVideo" style="z-index:-1;">Play me</button>
+    <video autoplay muted id="potatoVid"></video>
+    <!-- <button id="startVideo" style="z-index:-1;">Play me</button> -->
     <script src="./js/three.min.js"></script>
     <script src="./js/StereoEffect.js"></script>
     <script src="./js/close-pixelate-canvas.js"></script>
@@ -70,9 +71,10 @@
           }.bind(this));
         }
 
-        video = document.createElement('video');
-        video.setAttribute('autoplay', true);
-        video.setAttribute('muted', true);
+        video = document.getElementById("potatoVid");
+        // video = document.createElement('video');
+        // video.setAttribute('autoplay', true);
+        // video.setAttribute('muted', true);
         
         var options = {
           video: {
