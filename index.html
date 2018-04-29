@@ -156,7 +156,11 @@
                   // Show a UI element to let the user manually start playback
                   console.log("REJECTION");
                   document.getElementById("webglviewer").style.visibility = "hidden";
-                  document.getElementById("startVideo").addEventListener('click', () => { video.play(); })
+                  document.getElementById("startVideo").addEventListener('click', () => {
+                    document.getElementById("webglviewer").style.visibility = "visible";
+                    document.getElementById("startVideo").style.visibility = "hidden";
+                    video.play();
+                  });
               }).then(() => {
                   // Auto-play started
               });
