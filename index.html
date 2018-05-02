@@ -105,10 +105,16 @@
             console.log("change 4");
             // options.video.optional.push({'sourceId': sources[1].id});
 
+            var first = true;
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
               if (source.kind === 'videoinput') {
-                options.video.optional.push({'sourceId': source.id});
+                if (first) {
+                  first = false;
+                  options.video.optional.push({'sourceId': source.id});
+                } else {
+                  options.video.optional[options.video.optional.length - 1] = {'sourceId': source.id};
+                }
               }
             }
             navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
