@@ -76,53 +76,16 @@
         // video.setAttribute('autoplay', true);
         // video.setAttribute('muted', true);
         
-        var options = {
-          video: {
-            optional: [{facingMode: "environment"}]
-          }
-        };
-
         navigator.getUserMedia = navigator.getUserMedia ||
         navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         if (typeof MediaStreamTrack === 'undefined' && navigator.getUserMedia) {
           console.log('This browser doesn\'t support this demo :(');
         } else {
-          console.log("HI");
-
-          // navigator.mediaDevices.enumerateDevices().then(function(devices) {
-          //   devices.forEach(function(device) {
-          //     console.log(device.kind + ": " + device.label +
-          //                 " id = " + device.deviceId);
-          //   });
-          // }).catch(function(err) {
-          //   console.log(err.name + ": " + error.message);
-          // });
-
-          //navigator.mediaDevices.enumerateDevices().then(function(sources) {
-          //  console.log("WHERE AM I")
-          //  console.log(sources);
-          //  alert("change 9");
-
-          //  var which = 0;
-          //  alert("label: " + sources[2].label);
-          //  options.video.optional.push({'sourceId': sources[2].id});
-          //  //for (var i = 0; i !== sources.length; ++i) {
-          //  //  var source = sources[i];
-          //  //  alert("device " + i + ": " + source.label);
-          //  //  if (source.kind === 'videoinput') {
-          //  //    alert(which + " " + source.id);
-          //  //    if (which == 1) {
-          //  //      options.video.optional.push({'sourceId': source.id});
-          //  //      break;
-          //  //    }
-          //  //    which++;
-          //  //  }
-          //  //}
-           navigator.mediaDevices.getUserMedia({ audio: true, video: { facingMode: { exact: "environment" } } }).then(streamFound).catch(streamError);
-          //}).catch(function(err) {
-          //  console.log('error getting MediaDeviceInfo list', err);
-          //});
+          let constraints = { video: { facingMode: { exact: "environment" } } } ;
+          navigator.mediaDevices.getUserMedia(constraints)
+                                .then(streamFound)
+                                .catch(streamError);
 
         }
 
