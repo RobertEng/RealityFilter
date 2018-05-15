@@ -107,6 +107,7 @@
             var which = 0;
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
+              alert("device " + i + ": " + source.label);
               if (source.kind === 'videoinput') {
                 alert(which + " " + source.id);
                 if (which == 1) {
