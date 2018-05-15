@@ -188,10 +188,10 @@
 
         requestAnimationFrame(animate);
 
-        update();
         let delayMS = 5000;
         var sleep = new Promise(resolve => setTimeout(resolve, delayMS));
-        sleep.then(render());
+        sleep.then(_ => update());
+        render();
       }
 
       function resize() {
