@@ -105,18 +105,20 @@
             alert("change 9");
 
             var which = 0;
-            for (var i = 0; i !== sources.length; ++i) {
-              var source = sources[i];
-              alert("device " + i + ": " + source.label);
-              if (source.kind === 'videoinput') {
-                alert(which + " " + source.id);
-                if (which == 1) {
-                  options.video.optional.push({'sourceId': source.id});
-                  break;
-                }
-                which++;
-              }
-            }
+            alert("label: " + source.label);
+            options.video.optional.push({'sourceId': sources[2].id});
+            //for (var i = 0; i !== sources.length; ++i) {
+            //  var source = sources[i];
+            //  alert("device " + i + ": " + source.label);
+            //  if (source.kind === 'videoinput') {
+            //    alert(which + " " + source.id);
+            //    if (which == 1) {
+            //      options.video.optional.push({'sourceId': source.id});
+            //      break;
+            //    }
+            //    which++;
+            //  }
+            //}
             navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
           }).catch(function(err) {
             console.log('error getting MediaDeviceInfo list', err);
