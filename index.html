@@ -102,18 +102,18 @@
           navigator.mediaDevices.enumerateDevices().then(function(sources) {
             console.log("WHERE AM I")
             console.log(sources);
-            alert("change 5");
+            alert("change 6");
             // options.video.optional.push({'sourceId': sources[1].id});
 
-            var first = true;
+            var which = 1;
             for (var i = 0; i !== sources.length; ++i) {
               var source = sources[i];
               if (source.kind === 'videoinput') {
-                // if (first) {
-                //   first = false;
-                options.video.optional.push({'sourceId': source.id});
-                break;
-                // }
+                if (which == 0) {
+                  options.video.optional.push({'sourceId': source.id});
+                  break;
+                }
+                which--;
               }
             }
             navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
