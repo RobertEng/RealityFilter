@@ -102,7 +102,7 @@
           navigator.mediaDevices.enumerateDevices().then(function(sources) {
             console.log("WHERE AM I")
             console.log(sources);
-            alert("change 7");
+            alert("change 8");
             // options.video.optional.push({'sourceId': sources[1].id});
 
             var which = 0;
@@ -111,7 +111,7 @@
               alert("source " + i + " type: " + source.kind);
               if (source.kind === 'videoinput') {
                 alert(which + " " + source.id);
-                if (which == 2) {
+                if (which == 0) {
                   options.video.optional.push({'sourceId': source.id});
                   break;
                 }
