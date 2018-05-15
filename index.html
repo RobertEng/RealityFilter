@@ -99,28 +99,27 @@
           //   console.log(err.name + ": " + error.message);
           // });
 
-          // navigator.mediaDevices.enumerateDevices().then(function(sources) {
-          //   console.log("WHERE AM I")
-          //   console.log(sources);
-          //   alert("change 8");
-          //   // options.video.optional.push({'sourceId': sources[1].id});
+          navigator.mediaDevices.enumerateDevices().then(function(sources) {
+            console.log("WHERE AM I")
+            console.log(sources);
+            alert("change 9");
 
-          //   var which = 0;
-          //   for (var i = 0; i !== sources.length; ++i) {
-          //     var source = sources[i];
-          //     if (source.kind === 'videoinput') {
-          //       alert(which + " " + source.id);
-          //       if (which == 0) {
-          //         options.video.optional.push({'sourceId': source.id});
-          //         break;
-          //       }
-          //       which++;
-          //     }
-          //   }
-          //   navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
-          // }).catch(function(err) {
-          //   console.log('error getting MediaDeviceInfo list', err);
-          // });
+            var which = 0;
+            for (var i = 0; i !== sources.length; ++i) {
+              var source = sources[i];
+              if (source.kind === 'videoinput') {
+                alert(which + " " + source.id);
+                if (which == 1) {
+                  options.video.optional.push({'sourceId': source.id});
+                  break;
+                }
+                which++;
+              }
+            }
+            navigator.mediaDevices.getUserMedia(options).then(streamFound).catch(streamError);
+          }).catch(function(err) {
+            console.log('error getting MediaDeviceInfo list', err);
+          });
 
         }
 
