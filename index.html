@@ -179,21 +179,19 @@
 
       function animate() {
         if (context) {
-          let delayMS = 500;
-          var sleep = new Promise(resolve => setTimeout(resolve, delayMS));
-          sleep.then(function(_) {
-              context.drawImage(video, 0, 0, canvas.width, canvas.height);
+          context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
-              if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                texture.needsUpdate = true;
-              }
-          });
+          if (video.readyState === video.HAVE_ENOUGH_DATA) {
+            texture.needsUpdate = true;
+          }
         }
 
         requestAnimationFrame(animate);
 
         update();
-        render();
+        let delayMS = 500;
+        var sleep = new Promise(resolve => setTimeout(resolve, delayMS));
+        sleep.then(render());
       }
 
       function resize() {
