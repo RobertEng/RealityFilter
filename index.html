@@ -105,7 +105,9 @@
               video.srcObject = e.data;
               video.src = e.data;
             });
-          }
+          };
+
+          recorder.start();
 
           window.stream = stream; // make variable available to browser console
           document.body.appendChild(video);
