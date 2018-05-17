@@ -93,7 +93,10 @@
           let recorder = new MediaRecorder(stream);
           console.log("streamFound");
 
+          alert("recorder: " + recorder);
+
           recorder.ondataavailable = function(e) {
+            alert("data available");
             var sleep = new Promise(resolve => setTimeout(resolve, delayMS));
             sleep.then(function() {
               video.srcObject = e.data;
