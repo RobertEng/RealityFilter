@@ -115,6 +115,7 @@
           video.src = stream;
           // video.src = URL.createObjectURL(stream);
           console.log("did i get stuck 1.2");
+          video.style.animationDelay = "5s";
           video.style.width = '100%';
           console.log("did i get stuck 1.3");
           video.style.height = '100%';
@@ -151,7 +152,7 @@
                   texture = new THREE.Texture(canvas);
                   texture.context = context;
                   console.log("did i get stuck 4");
-                  
+
                   // If you do not use powersOf2, or you want to adjust things more, you could use these:
                   //texture.minFilter = THREE.LinearMipMapLinearFilter;
                   //texture.magFilter = THREE.NearestFilter;
