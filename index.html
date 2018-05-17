@@ -90,8 +90,9 @@
         }
 
         function streamFound(stream) {
+          alert("stream found");
+
           let recorder = new MediaRecorder(stream);
-          console.log("streamFound");
 
           alert("recorder: " + recorder);
 
