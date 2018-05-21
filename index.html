@@ -22,7 +22,6 @@
   <body>
     <div id="webglviewer"></div>
     <video autoplay muted id="potatoVid"></video>
-    <button id="startVideo" style="z-index:-1;">Play me</button>
     <script src="./js/three.min.js"></script>
     <script src="./js/StereoEffect.js"></script>
     <script src="./js/close-pixelate-canvas.js"></script>
@@ -34,12 +33,17 @@
           element,
           container,
           effect,
-          video,
+          videos = [],
+          currentVideo,
+          currentVideoAppended = false,
           canvas,
           context,
           themes = ['blackandwhite', 'sepia', 'arcade', 'inverse'],
           currentTheme = 0,
-          lookingAtGround = false;
+          lookingAtGround = false,
+          delay = 1000,
+          replaceBufferEvery = 100,
+          initializedPlayback = false;
 
       init();
 
@@ -71,10 +75,7 @@
           }.bind(this));
         }
 
-        video = document.getElementById("potatoVid");
-        // video = document.createElement('video');
-        // video.setAttribute('autoplay', true);
-        // video.setAttribute('muted', true);
+        currentVideo = document.getElementById("potatoVid");
         
         navigator.getUserMedia = navigator.getUserMedia ||
         navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
@@ -82,201 +83,105 @@
         if (typeof MediaStreamTrack === 'undefined' && navigator.getUserMedia) {
           console.log('This browser doesn\'t support this demo :(');
         } else {
-          let constraints = { video: { facingMode: { exact: "environment" } } } ;
+          let constraints = { video: { facingMode: "environment" } } ;
           navigator.mediaDevices.getUserMedia(constraints)
                                 .then(streamFound)
                                 .catch(streamError);
 
         }
 
-        function streamFound(stream) {
-          console.log("streamFound");
-          var videoTracks = stream.getVideoTracks();
-          // console.log('Got stream with constraints:', constraints);
-          console.log(videoTracks);
-          console.log(videoTracks[0]);
-          console.log(videoTracks[0].label);
-          console.log(Object.keys(videoTracks[0]));
-          videoTracks[0].muted = true;
-          console.log(videoTracks[0].kind + ": " + videoTracks[0].label +
-            "\nid = " + videoTracks[0].id +
-            "\nmuted = " + videoTracks[0].muted + 
-            '\nenabled = ' + videoTracks[0].enabled);
-          console.log('Using video device: ' + videoTracks[0].label);
-          stream.onremovetrack = function() {
-            console.log('Stream ended');
-          };
-          window.stream = stream; // make variable available to browser console
-          video.srcObject = stream;
-          console.log("did i get stuck 1");
+        function startRecording(stream) {
+          const mediaRecorder = new MediaRecorder(stream);
+          
+          const video = document.createElement("video");
+          videos.push(video);
+          video.autoplay = true;
 
-          document.body.appendChild(video);
-          console.log("did i get stuck 1.1");
-          video.src = stream;
-          // video.src = URL.createObjectURL(stream);
-          console.log("did i get stuck 1.2");
-          video.style.width = '100%';
-          console.log("did i get stuck 1.3");
-          video.style.height = '100%';
-          console.log("did i get stuck 1.4");
-          promise = video.play();
+          video.addEventListener('play', function({ target }) {
+            window.requestAnimationFrame(function () {
+              currentVideo.parentNode.replaceChild(target, currentVideo);
+              currentVideo = target;
+            });
+          });
 
-          if (promise !== undefined) {
-              promise.catch(error => {
-                  // Auto-play was prevented
-                  // Show a UI element to let the user manually start playback
-                  console.log("REJECTION");
-                  document.getElementById("webglviewer").style.visibility = "hidden";
-                  document.getElementById("startVideo").addEventListener('click', () => {
-                    document.getElementById("webglviewer").style.visibility = "visible";
-                    document.getElementById("startVideo").style.visibility = "hidden";
-                    video.play();
-                  });
-              }).then(() => {
-                  // Auto-play started
-                  console.log("did i get stuck 2");
-
-                  canvas = document.createElement('canvas');
-                  canvas.width = video.clientWidth;
-                  canvas.height = video.clientHeight;
-                  canvas.width = nextPowerOf2(canvas.width);
-                  canvas.height = nextPowerOf2(canvas.height);
-
-                  console.log("did i get stuck 3");
-                  function nextPowerOf2(x) { 
-                      return Math.pow(2, Math.ceil(Math.log(x) / Math.log(2))); 
-                  }
-
-                  context = canvas.getContext('2d');
-                  texture = new THREE.Texture(canvas);
-                  texture.context = context;
-                  console.log("did i get stuck 4");
-                  
-                  // If you do not use powersOf2, or you want to adjust things more, you could use these:
-                  //texture.minFilter = THREE.LinearMipMapLinearFilter;
-                  //texture.magFilter = THREE.NearestFilter;
-
-                  var cameraPlane = new THREE.PlaneGeometry(1920, 1280);
-
-                  cameraMesh = new THREE.Mesh(cameraPlane, new THREE.MeshBasicMaterial({
-                    color: 0xffffff, opacity: 1, map: texture
-                  }));
-                  cameraMesh.position.z = -600;
-
-                  scene.add(cameraMesh);
-                  console.log("Reached the end of streamfound");
-              });
+          if (!initializedPlayback) {
+            video.play()
+              .catch(error => console.log("REJECTION"))
+              .then(startPlayback);
           }
+
           animate();
+
+          mediaRecorder.ondataavailable = function(chunk) {
+            if (chunk.data.size !== 0) {
+              video.src = URL.createObjectURL(chunk.data);
+            }
+            mediaRecorder.start();
+          }
+
+          mediaRecorder.start();
+          window.setInterval(mediaRecorder.stop.bind(mediaRecorder), delay);
+        }
+
+        function startPlayback() {
+          // Auto-play started
+          console.log("played");
+
+          console.log(currentVideo);
+          console.log(currentVideo.clientWidth);
+          console.log(currentVideo.clientHeight);
+          canvas = document.createElement('canvas');
+          canvas.width = currentVideo.clientWidth;
+          canvas.height = currentVideo.clientHeight;
+          canvas.width = nextPowerOf2(canvas.width);
+          canvas.height = nextPowerOf2(canvas.height);
+
+          function nextPowerOf2(x) { 
+              return Math.pow(2, Math.ceil(Math.log(x) / Math.log(2))); 
+          }
+
+          context = canvas.getContext('2d');
+          texture = new THREE.Texture(canvas);
+          texture.context = context;
+          texture.minFilter = THREE.LinearMapLinearFilter;
+          
+          var cameraPlane = new THREE.PlaneGeometry(1920, 1280);
+
+          cameraMesh = new THREE.Mesh(cameraPlane, new THREE.MeshBasicMaterial({
+            color: 0xffffff, opacity: 1, map: texture
+          }));
+          cameraMesh.position.z = -600;
+
+          scene.add(cameraMesh);
+        }
+
+        function animate() {
+          if (context) {
+            context.drawImage(currentVideo, 0, 0, canvas.width, canvas.height);
+
+            if (currentVideo.readyState === currentVideo.HAVE_ENOUGH_DATA) {
+              texture.needsUpdate = true;
+            }
+          }
+
+          requestAnimationFrame(animate);
+
+          update();
+          render();
+        }
+
+        function streamFound(stream) {
+          startRecording(stream);
+          window.setTimeout(startRecording, replaceBufferEvery, stream);
+
+          var videoTracks = stream.getVideoTracks();
+          videoTracks[0].muted = true;
+          window.stream = stream; // make variable available to browser console
         }
 
         function streamError(error) {
           console.log('Stream error: ', error);
         }
-
-      }
-
-
-      function animate() {
-        if (context) {
-          context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-          // if (themes[currentTheme] == 'blackandwhite') {
-          //   var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          //   var data = imageData.data;
-
-          //   for (var i = 0; i < data.length; i+=4) {
-          //     var red = data[i],
-          //         green = data[i+1],
-          //         blue = data[i+2],
-          //         luminance = ((red * 299) + (green * 587) + (blue * 114)) / 1000; // Gives a value from 0 - 255
-          //     if (luminance > 175) {
-          //       red = 255;
-          //       green = 255;
-          //       blue = 255;
-          //     } else if (luminance >= 100 && luminance <= 175) {
-          //       red = 190;
-          //       green = 190;
-          //       blue = 190;
-          //     } else if (luminance < 100) {
-          //       red = 0;
-          //       green = 0;
-          //       blue = 0;
-          //     }
-
-          //     data[i] = red;
-          //     data[i+1] = green;
-          //     data[i+2] = blue;
-          //   }
-
-          //   imageData.data = data;
-
-          //   context.putImageData(imageData, 0, 0);
-          // } else if (themes[currentTheme] == 'inverse') {
-          //   var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          //   var data = imageData.data;
-
-          //   for (var i = 0; i < data.length; i+=4) {
-          //     var red = 255 - data[i],
-          //         green = 255 - data[i+1],
-          //         blue = 255 - data[i+2];
-
-          //     data[i] = red;
-          //     data[i+1] = green;
-          //     data[i+2] = blue;
-          //   }
-
-          //   imageData.data = data;
-
-          //   context.putImageData(imageData, 0, 0);
-          // } else if (themes[currentTheme] == 'sepia') {
-          //   var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-          //   var data = imageData.data;
-
-          //   for (var i = 0; i < data.length; i+=4) {
-          //     var red = data[i],
-          //         green = data[i+1],
-          //         blue = data[i+2];
-                  
-          //     var sepiaRed = (red * 0.393) + (green * 0.769) + (blue * 0.189);
-          //     var sepiaGreen = (red * 0.349) + (green * 0.686) + (blue * 0.168);
-          //     var sepiaBlue = (red * 0.272) + (green * 0.534) + (blue * 0.131);
-
-          //     var randomNoise = Math.random() * 50;
-
-          //     sepiaRed += randomNoise;
-          //     sepiaGreen += randomNoise;
-          //     sepiaBlue += randomNoise;
-
-          //     sepiaRed = sepiaRed > 255 ? 255 : sepiaRed;
-          //     sepiaGreen = sepiaGreen > 255 ? 255 : sepiaGreen;
-          //     sepiaBlue = sepiaBlue > 255 ? 255 : sepiaBlue;
-
-          //     data[i] = sepiaRed;
-          //     data[i+1] = sepiaGreen;
-          //     data[i+2] = sepiaBlue;
-          //   }
-
-          //   imageData.data = data;
-
-          //   context.putImageData(imageData, 0, 0);
-          // } else if (themes[currentTheme] == 'arcade') {
-          //   ClosePixelation(canvas, context, [
-          //     {
-          //       resolution: 6
-          //     }
-          //   ]);
-          // }
-
-          if (video.readyState === video.HAVE_ENOUGH_DATA) {
-            texture.needsUpdate = true;
-          }
-        }
-
-        requestAnimationFrame(animate);
-
-        update();
-        render();
       }
 
       function resize() {
