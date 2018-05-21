@@ -108,6 +108,7 @@
             video.play()
               .catch(error => console.log("REJECTION"))
               .then(startPlayback);
+            initializedPlayback = true;
           }
 
           animate();
@@ -125,11 +126,6 @@
 
         function startPlayback() {
           // Auto-play started
-          console.log("played");
-
-          console.log(currentVideo);
-          console.log(currentVideo.clientWidth);
-          console.log(currentVideo.clientHeight);
           canvas = document.createElement('canvas');
           canvas.width = currentVideo.clientWidth;
           canvas.height = currentVideo.clientHeight;
