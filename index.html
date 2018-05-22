@@ -87,6 +87,7 @@
             video: {
               // Get the highest resolution available.
               optional: [
+                {facingMode: "environment"},
                 {minWidth: 320},
                 {minWidth: 640},
                 {minWidth: 800},
@@ -94,8 +95,7 @@
                 {minWidth: 1024},
                 {minWidth: 1280},
                 {minWidth: 1920},
-                {minWidth: 2560},
-                {facingMode: "environment"}
+                {minWidth: 2560}
               ]
             }
           };
