@@ -41,7 +41,7 @@
           themes = ['blackandwhite', 'sepia', 'arcade', 'inverse'],
           currentTheme = 0,
           lookingAtGround = false,
-          delay = 1000,
+          delay = 2000,
           replaceBufferEvery = delay / 2,
           initializedPlayback = false;
 
@@ -109,8 +109,9 @@
               .catch(error => console.log("REJECTION"))
               .then(startPlayback);
             initializedPlayback = true;
-            animate();
           }
+
+          animate();
 
           mediaRecorder.ondataavailable = function(chunk) {
             if (chunk.data.size !== 0) {
@@ -170,6 +171,7 @@
 
           var videoTracks = stream.getVideoTracks();
           videoTracks[0].muted = true;
+          window.stream = stream; // make variable available to browser console
         }
 
         function streamError(error) {
