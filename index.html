@@ -86,8 +86,17 @@
           let constraints = {
             video: {
               // Get the highest resolution available.
-              minWidth: 1024,
-              facingMode: "environment"
+              optional: [
+                {minWidth: 320},
+                {minWidth: 640},
+                {minWidth: 800},
+                {minWidth: 900},
+                {minWidth: 1024},
+                {minWidth: 1280},
+                {minWidth: 1920},
+                {minWidth: 2560},
+                {facingMode: "environment"}
+              ]
             }
           };
           navigator.mediaDevices.getUserMedia(constraints)
