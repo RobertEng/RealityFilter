@@ -76,14 +76,16 @@
         }
 
         currentVideo = document.getElementById("potatoVid");
-        
+
         navigator.getUserMedia = navigator.getUserMedia ||
         navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
 
         if (typeof MediaStreamTrack === 'undefined' && navigator.getUserMedia) {
           console.log('This browser doesn\'t support this demo :(');
         } else {
-          let constraints = { video: { facingMode: "environment" } } ;
+          let constraints = { video: { facingMode: "environment",
+                                       width: { ideal: 4096 },
+                                       height: { ideal: 2160 } } } ;
           navigator.mediaDevices.getUserMedia(constraints)
                                 .then(streamFound)
                                 .catch(streamError);
