@@ -35,6 +35,7 @@
           effect,
           videos = [],
           currentVideo,
+          currentVideoAppended = false,
           canvas,
           context,
           themes = ['blackandwhite', 'sepia', 'arcade', 'inverse'],
@@ -86,6 +87,7 @@
           navigator.mediaDevices.getUserMedia(constraints)
                                 .then(streamFound)
                                 .catch(streamError);
+
         }
 
         function startRecording(stream) {
@@ -115,10 +117,10 @@
             if (chunk.data.size !== 0) {
               video.src = URL.createObjectURL(chunk.data);
             }
-            mediaRecorder.start(delay * 100);
+            mediaRecorder.start();
           }
 
-          mediaRecorder.start(delay * 100);
+          mediaRecorder.start();
           window.setInterval(mediaRecorder.stop.bind(mediaRecorder), delay);
         }
 
@@ -137,7 +139,7 @@
           context = canvas.getContext('2d');
           texture = new THREE.Texture(canvas);
           texture.context = context;
-
+          
           var cameraPlane = new THREE.PlaneGeometry(1920, 1280);
 
           cameraMesh = new THREE.Mesh(cameraPlane, new THREE.MeshBasicMaterial({
